@@ -1,3 +1,4 @@
+from numpy import arange, tile, repeat
 from flask import render_template
 from app import app
 import happybase
@@ -15,25 +16,31 @@ def latlong(path):
   row = wvel.row(key)
   return row['data:d20140101'] + '  and  ' + row['data:d20140102']
 
-@app.route('/testytest')
-def testytest():
+@app.route('/conus')
+def conus():
+  # Lat/long range of geographic area to plot
+  latmin = 25.5 # CONUS: 25.5
+  latmax = 49.5 # CONUS: 49.5
+  longmin = 235 # CONUS: 235
+  longmax = 293.5 # CONUS: 293.5
+  step = 0.5 # Geographic granularity
+  center = (38.0, 263.0)
+  (vel_in, rows) = loadarea(latmin, latmax, longmin, \
+	longmax, step)
+  return render_template("loadarea.html", 
+	vel_in = vel_in, 
+	center = center,
+	title = "Continental United States")
+
+def loadarea(latmin, latmax, longmin, longmax, step):
   # Data from the hbase table, just for Jan 1, 2014
   rows = {}
-  #row = wvel.row('37.5_237.5', columns=['data:d20140101'])
-  #vel_in2.append(row['data:d20140101'])
-  # Sample map data (lat, long, velocity [m/s])  
-  vel_in = [] \
-    #(37.5, 237.5, 10.0),\
-    #(37.5, 237.0, 2.0),\
-    #(38.0, 237.5, 2.0),\
-    #(38.0, 237.0, 2.0)\
-  lalo = [("37.5","237.5"),("37.5","237.0"),\
-	("38.0", "237.5"),("38.0", "237.0")]
+  vel_in = [] 
+  las = arange(latmin, latmax, step)
+  los = arange(longmin, longmax, step)
+  lalo = zip(repeat(las, len(los)),tile(los, len(las)))
   for (la, lo) in lalo:
-    row = wvel.row(la+'_'+lo)
+    row = wvel.row(str(la)+'_'+str(lo))
     rows[(la, lo)] = row
-    vel_in.append((float(la), float(lo), float(row['data:d20140101'])))
-
-  return render_template("testytest.html", 
-	vel_in = vel_in)
-
+    vel_in.append((la, lo, float(row['data:d20140101'])))
+  return (vel_in, rows)
