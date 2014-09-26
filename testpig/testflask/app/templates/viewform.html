@@ -7,8 +7,9 @@
     Form Example!
     <form action="http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/processform" method="Post">
     <select name="region">
-    <option value="CONUS">Continental U.S.</option>
-    <option value="WORLD">Whole World</option>
+    {% for (region, name) in regions %}
+    <option value={{region}}>{{name}}</option>
+    {% endfor %}
     </select>
     <select name="day">
     <option value="20140101">January 1, 2014</option>
