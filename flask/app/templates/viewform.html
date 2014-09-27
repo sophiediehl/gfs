@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Form Example</title>
+  </head>
+  <body>
+    Form Example!
+    <form action="http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/processform" method="Post">
+    <select name="region">
+    {% for (region, name) in regions %}
+    <option value={{region}}>{{name}}</option>
+    {% endfor %}
+    </select>
+    <select name="day">
+    <option value="20140101">January 1, 2014</option>
+    <option value="20140102">January 2, 2014</option>
+    </select>
+    <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>

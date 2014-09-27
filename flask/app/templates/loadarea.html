@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> {{title}} </title>
+    <style type="text/css">
+      html, body, #map-canvas { height: 400px; width: 700px; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript"
+    src="http://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false&key=AIzaSyAwkXXGz7H8p9pTRmzMiCpoyTFnJ1BVVg0">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+	// velArray holds wind velocity to report on click event
+	var velArray = {};
+	{% for (curlat, curlong, curweight) in vel_in %}
+	  velArray[{{curlat}}*10000 + {{curlong}}] = {{curweight}};
+	{% endfor %}
+	// Configure the map
+        var mapOptions = {
+          center: { lat: {{center[0]}}, lng: {{center[1]}}},
+          zoom: 4
+        };
+	// Get all wind velocity data for the given area
+        var heatmapData = [
+	  {% for (curlat, curlong, curweight) in vel_in %}
+	  {location: new google.maps.LatLng({{curlat}}, {{curlong}}), weight:{{curweight}}},
+	  {% endfor %}
+        ];
+	// Instantiate the google map
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	// Instantiate the heatmap layer and tie it to the map
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapData, dissipating:false, radius: 0.9
+        });
+        heatmap.setMap(map);
+	// This infowindow will display velocity info on click
+        var infowindow = new google.maps.InfoWindow({
+        });
+	// Click event: display location's wind velocity [m/s]
+        google.maps.event.addListener(map, 'click', function(event) {
+          var trueLat = Math.round(event.latLng.k*2)/2.0;
+          var trueLong =  Math.round(event.latLng.B*2)/2.0;
+          var truelatLng = new google.maps.LatLng(trueLat, trueLong);
+	  if (trueLong < 0) {trueLong = 360 + trueLong};
+	  console.log(trueLat, trueLong);
+          infowindow.open(map);
+          infowindow.setPosition(truelatLng);
+          infowindow.setContent(String(velArray[trueLat*10000+trueLong])+' [m/s]');
+        });
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      {% for row in vel_in2 %}
+      console.log(String({{row}}));
+      {% endfor %}
+
+    </script>
+  </head>
+  <body>
+
+    <form action="http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/processform" method="Post">
+    <select name="region">
+    {% for (region, name) in regions %}
+    <option value={{region}}>{{name}}</option>
+    {% endfor %}
+    </select>
+    <select name="day">
+    <option value="20140101">January 1, 2014</option>
+    <option value="20140102">January 2, 2014</option>
+    </select>
+    <input type="submit" value="Submit">
+    </form>
+    <br>
+    <div id="map-canvas"></div>
+  </body>
+</html>
+
