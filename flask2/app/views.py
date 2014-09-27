@@ -5,51 +5,12 @@ import happybase
 connection = happybase.Connection()
 wvel = connection.table('allwindskinny')
 
+# Load specific regions
 region_data = { \
-  'GB': {'name': 'Great Britain', \
-    'latmin': 50.0, 'latmax': 58.0, \
-    'longmin': 349.5, 'longmax': 360.0, \
-    'lostep': 1.0, 'center': (53.5, 356)}, \
   'CONUS': {'name': "Continental U.S.", \
     'latmin': 25.5, 'latmax': 49.5, \
     'longmin': 235, 'longmax': 293.5, \
     'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'EUSO': {'name': 'Europe - South', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'EUNO': {'name': 'Europe - Nordic', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AFNO': {'name': 'Africa - North', \
-    'latmin': 25.5, 'latmax': 38.0, \
-    'longmin': 235, 'longmax': 263.0, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AFSO': {'name': 'Africa - South', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'ALA': {'name': 'Alaska and Yukon', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'CAN': {'name': 'Canada', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'CAM': {'name': 'Central America', \
-    'latmin': 1.0, 'latmax': 24.5, \
-    'longmin': 252.0, 'longmax': 311.0, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'SSA': {'name': 'South America', \
-    'latmin': -36.0, 'latmax': -0.5, \
-    'longmin': 277.0, 'longmax': 325.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AUS': {'name': 'Australia', \
-    'latmin': -44.0, 'latmax': -9.0, \
-    'longmin': 112.0, 'longmax': 156.5, \
-    'lostep': 0.5, 'center': (-26.0, 134.5)}, \
   'ME': {'name': 'Middle East', \
     'latmin': 14.0, 'latmax': 41.0, \
     'longmin': 24.5, 'longmax': 77.5, \
@@ -69,7 +30,23 @@ region_data = { \
 def index():
   regions = [(region, region_data[region]['name']) \
 	for region in region_data]
-  return render_template("viewform.html",
+  return render_template("pickarea.html",
+	regions = regions)
+
+@app.route('/bsexample')
+def bsexample():
+  return render_template("bsexample.html")
+
+@app.route('/view/<la>/<lo>/<ttype>/<tunit>')
+def viewarea(la, lo, ttype, tunit):
+  center = (float(la), float(lo))
+  vel_in = loadarea(float(la), float(lo), ttype, tunit)
+  regions = [(region, region_data[region]['name']) \
+        for region in region_data]
+  return render_template("loadarea.html",
+	vel_in = vel_in,
+	center = center,
+	title = "Wind Speed in Meters per Second",
 	regions = regions)
 
 @app.route('/processform', methods=['POST'])
@@ -88,7 +65,7 @@ def showheatmap(region, day):
   lostep = region_data[region]['lostep']
   center = region_data[region]['center']
   vel_in = loadarea(latmin, latmax, longmin, \
-	longmax, lostep, day)
+	longmax, lastep, lostep, day)
   regions = [(reg, region_data[reg]['name']) \
         for reg in region_data]
   return render_template("loadarea.html",
@@ -97,12 +74,16 @@ def showheatmap(region, day):
 	title = "Wind Speed in Meters per Second",
 	regions = regions) 
 
-def loadarea(latmin, latmax, longmin, longmax, lostep, day):
+def loadarea(la, lo, ttype, tunit):
+  lastep = 0.5
+  lostep = 0.5
   vel_in = [] 
-  las = arange(latmin, latmax, 0.5)
-  los = arange(longmin, longmax, lostep)
+  las = arange(la-6, la+6, lastep)
+  los = arange(lo-12, lo+12, lostep)
   lalo = zip(repeat(las, len(los)),tile(los, len(las)))
   for (la, lo) in lalo:
-    row = wvel.row(day+'_'+str(la)+'_'+str(lo))
-    vel_in.append((la, lo, float(row['d:v80m'])))
+    if ttype == 'D': # Daily average view
+      row = wvel.row(tunit+'_'+str(la)+'_'+str(lo))
+      vel_in.append((la, lo, float(row['d:v80m'])))
   return vel_in
+

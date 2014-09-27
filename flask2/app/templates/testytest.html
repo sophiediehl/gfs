@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title> {{title}} </title>
     <style type="text/css">
       html, body, #map-canvas { height: 400px; width: 700px; margin: 0; padding: 0;}
     </style>
@@ -17,7 +16,7 @@
 	{% endfor %}
 	// Configure the map
         var mapOptions = {
-          center: { lat: {{center[0]}}, lng: {{center[1]}}},
+          center: { lat: 38, lng: -97.0},
           zoom: 4
         };
 	// Get all wind velocity data for the given area
@@ -45,7 +44,7 @@
 	  console.log(trueLat, trueLong);
           infowindow.open(map);
           infowindow.setPosition(truelatLng);
-          infowindow.setContent(String(velArray[trueLat*10000+trueLong])+' [m/s]');
+          infowindow.setContent(String(velArray[trueLat*10000+trueLong]));
         });
 
       }
@@ -58,21 +57,7 @@
     </script>
   </head>
   <body>
-
-    <form action="http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/processform" method="Post">
-    <select name="region">
-    {% for (region, name) in regions %}
-    <option value={{region}}>{{name}}</option>
-    {% endfor %}
-    </select>
-    <select name="day">
-    <option value="20140101">January 1, 2014</option>
-    <option value="20140102">January 2, 2014</option>
-    </select>
-    <input type="submit" value="Submit">
-    </form>
-    <br>
-    <div id="map-canvas"></div>
+<div id="map-canvas"></div>
   </body>
 </html>
 
