@@ -30,7 +30,7 @@
         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	// Instantiate the heatmap layer and tie it to the map
         var heatmap = new google.maps.visualization.HeatmapLayer({
-          data: heatmapData, dissipating:false, radius: 0.7
+          data: heatmapData, dissipating:false, radius: 0.9
         });
         heatmap.setMap(map);
 	// This infowindow will display velocity info on click
