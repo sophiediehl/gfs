@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body, #map-canvas { height: 400px; width: 700px; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript"
+    src="http://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false&key=AIzaSyAwkXXGz7H8p9pTRmzMiCpoyTFnJ1BVVg0">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+	// velArray holds wind velocity to report on click event
+	var velArray = {};
+	{% for (curlat, curlong, curweight) in vel_in %}
+	  velArray[{{curlat}}*10000 + {{curlong}}] = {{curweight}};
+	{% endfor %}
+	// Configure the map
+        var mapOptions = {
+          center: { lat: 38, lng: -97.0},
+          zoom: 4
+        };
+	// Get all wind velocity data for the given area
+        var heatmapData = [
+	  {% for (curlat, curlong, curweight) in vel_in %}
+	  {location: new google.maps.LatLng({{curlat}}, {{curlong}}), weight:{{curweight}}},
+	  {% endfor %}
+        ];
+	// Instantiate the google map
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	// Instantiate the heatmap layer and tie it to the map
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapData, dissipating:false, radius: 0.7
+        });
+        heatmap.setMap(map);
+	// This infowindow will display velocity info on click
+        var infowindow = new google.maps.InfoWindow({
+        });
+	// Click event: display location's wind velocity [m/s]
+        google.maps.event.addListener(map, 'click', function(event) {
+          var trueLat = Math.round(event.latLng.k*2)/2.0;
+          var trueLong =  Math.round(event.latLng.B*2)/2.0;
+          var truelatLng = new google.maps.LatLng(trueLat, trueLong);
+	  if (trueLong < 0) {trueLong = 360 + trueLong};
+	  console.log(trueLat, trueLong);
+          infowindow.open(map);
+          infowindow.setPosition(truelatLng);
+          infowindow.setContent(String(velArray[trueLat*10000+trueLong]));
+        });
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      {% for row in vel_in2 %}
+      console.log(String({{row}}));
+      {% endfor %}
+
+    </script>
+  </head>
+  <body>
+<div id="map-canvas"></div>
+  </body>
+</html>
+
