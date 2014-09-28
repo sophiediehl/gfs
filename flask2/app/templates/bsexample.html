@@ -11,7 +11,7 @@
     <title>{{title}}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/static/starter-template.css" rel="stylesheet">
@@ -86,7 +86,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">About</a></li>
+            <li><a href="#">About</a></li>
             <li><a href="#">API</a></li>
             <li><a href="#">Slides</a></li>
           </ul>
@@ -108,152 +108,19 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
+	    <li class="active"><a>{{year}}</a></li>
+	    {% for month in months %}
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Jan<span class="caret"></span>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{month}}<span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li><a href="#">7</a></li>
-                <li><a href="#">8</a></li>
-                <li><a href="#">9</a></li>
-                <li><a href="#">10</a></li>
-                <li><a href="#">11</a></li>
-                <li><a href="#">12</a></li>
-                <li><a href="#">13</a></li>
-                <li><a href="#">14</a></li>
-                <li><a href="#">15</a></li>
-                <li><a href="#">16</a></li>
-                <li><a href="#">17</a></li>
-                <li><a href="#">18</a></li>
-                <li><a href="#">19</a></li>
-                <li><a href="#">20</a></li>
-                <li><a href="#">21</a></li>
-                <li><a href="#">22</a></li>
-                <li><a href="#">23</a></li>
-                <li><a href="#">24</a></li>
-                <li><a href="#">25</a></li>
-                <li><a href="#">26</a></li>
-                <li><a href="#">27</a></li>
-                <li><a href="#">28</a></li>
-                <li><a href="#">29</a></li>
-                <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
+		{% for day in range(1,moinfo[month][1]+1) %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/D/{{year}}{{moinfo[month][0]}}{% if day<10 %}0{% endif %}{{day}}">{{day}}</a></li>
+		{% endfor %}
                 <li><a href="#">Monthly Average</a></li>
               </ul>
             </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
-
-	    <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feb<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" role="menu">
-	        <li><a href="#">30</a></li>
-                <li><a href="#">31</a></li>
-	      </ul>
-	    </li>
+	    {% endfor %}
 
           </ul>
 
@@ -263,15 +130,35 @@
     </div>
 
 
-    <div class="container">
-
       <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
+        <h1>
+	{% if ttype=="D" %}
+	Daily Average, {{tunit[4:6]+'/'+tunit[6:8]+'/'+tunit[:4]}}
+	{% endif %}
+	</h1>
       </div>
+    <div id="map-canvas"></div>
 
-    </div><!-- /.container -->
-    <div class="container">
-      <div id="map-canvas"></div>
+    <div class=button-holder>
+    <a href="/">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-left"></span>
+    West</button></a>
+
+    <a href="/">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-up"></span>
+    North</button></a>
+
+    <a href="/">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-down"></span>
+    South</button></a>
+
+    <a href="/">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-right"></span>
+    East</button></a>
     </div>
 
     <!-- Bootstrap core JavaScript

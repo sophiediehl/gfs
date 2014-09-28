@@ -5,21 +5,33 @@ import happybase
 connection = happybase.Connection()
 wvel = connection.table('allwindskinny')
 
+# Number of days in each month
+modaynominal = {'Jan':('01',31), 'Feb':('02',28), \
+	'Mar':('03',31), 'Apr':('04',30), 'May':('05',31), \
+	'Jun':('06',30), 'Jul':('07',31), 'Aug':('08',31), \
+	'Sep':('09',30), 'Oct':('10',31), 'Nov':('11',30), \
+	'Dec':('12',31)}
+mos = ['Jan','Feb','Mar','Apr','May','Jun','Jul', \
+	'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+
 @app.route('/')
 @app.route('/index')
 def index():
-  regions = [(region, region_data[region]['name']) \
-	for region in region_data]
-  return render_template("pickarea.html",
-	regions = regions)
+  return render_template("pickarea.html")
 
 @app.route('/view/<la>/<lo>/<ttype>/<tunit>')
 def viewarea(la, lo, ttype, tunit):
   center = (float(la), float(lo))
   vel_in = loadarea(float(la), float(lo), ttype, tunit)
   return render_template("bsexample.html",
+	year = 2014, # current year -1 
+	ttype = ttype,
+	tunit = tunit,
 	vel_in = vel_in,
 	center = center,
+	months = mos,
+	moinfo = modaynominal,
 	title = "Wind Speed in Meters per Second")
 
 def loadarea(la, lo, ttype, tunit):
