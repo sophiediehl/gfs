@@ -140,15 +140,15 @@
     <div id="map-canvas"></div>
 
     <div class=button-holder>
-    <a href="/view/{{center[0]}}/{{center[1]-20}}/{{ttype}}/{{tunit}}">
+    <a href="/view/{{center[0]}}/{{(center[1]-20)%360}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-left"></span>
     West</button></a>
-    <a href="/view/{{center[0]+10}}/{{center[1]}}/{{ttype}}/{{tunit}}">
+    <a href="/view/{{((center[0]+100)%180)-90}}/{{center[1]}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-up"></span>
     North</button></a>
-    <a href="/view/{{center[0]-10}}/{{center[1]}}/{{ttype}}/{{tunit}}">
+    <a href="/view/{{((center[0]+80)%180)-90}}/{{center[1]}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-down"></span>
     South</button></a>

@@ -42,6 +42,8 @@ def loadarea(la, lo, ttype, tunit):
   los = arange(lo-12, lo+12, lostep)
   lalo = zip(repeat(las, len(los)),tile(los, len(las)))
   for (la, lo) in lalo:
+    la = ((la + 90) % 180) - 90 # No falling off the edge
+    lo = lo % 360		# of the world!
     if ttype == 'D': # Daily average view
       row = wvel.row(tunit+'_'+str(la)+'_'+str(lo))
       vel_in.append((la, lo, float(row['d:v80m'])))
