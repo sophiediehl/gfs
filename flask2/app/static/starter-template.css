@@ -5,3 +5,16 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+
+.starter-template-map {
+  padding: 10px 10px;
+  text-align: center;
+}
+
+html, body, #map-canvas {
+  height: 400px;
+  width: 600px;
+  margin: 0;
+  padding: 0;
+}
+
