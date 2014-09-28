@@ -82,7 +82,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Windpipe</a>
+          <a class="navbar-brand" href="/">Windpipe</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -140,22 +140,19 @@
     <div id="map-canvas"></div>
 
     <div class=button-holder>
-    <a href="/">
+    <a href="/view/{{center[0]}}/{{center[1]-20}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-left"></span>
     West</button></a>
-
-    <a href="/">
+    <a href="/view/{{center[0]+5}}/{{center[1]}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-up"></span>
     North</button></a>
-
-    <a href="/">
+    <a href="/view/{{center[0]-10}}/{{center[1]}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-down"></span>
     South</button></a>
-
-    <a href="/">
+    <a href="/view/{{center[0]}}/{{center[1]+20}}/{{ttype}}/{{tunit}}">
     <button type="button" class="btn btn-default btn-lg">
       <span class="glyphicon glyphicon-circle-arrow-right"></span>
     East</button></a>
