@@ -16,34 +16,6 @@
     <!-- Custom styles for this template -->
     <link href="/static/starter-template.css" rel="stylesheet">
 
-    <script type="text/javascript"
-    src="http://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false&key=AIzaSyAwkXXGz7H8p9pTRmzMiCpoyTFnJ1BVVg0">
-    </script>
-    <script type="text/javascript">
-      function initialize() {
-	// Configure the map
-        var mapOptions = {
-          center: { lat: 0.0, lng: 180.0},
-          zoom: 1
-        };
-	// Instantiate the google map
-        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-	// This infowindow will display velocity info on click
-        var infowindow = new google.maps.InfoWindow({
-        });
-	// Click event: display location's wind velocity [m/s]
-        google.maps.event.addListener(map, 'click', function(event) {
-          var trueLat = (Math.round(event.latLng.k*2)/2.0);
-          var trueLong = (Math.round(event.latLng.B*2)/2.0 +360)%360;
-          var truelatLng = new google.maps.LatLng(trueLat, trueLong);
-	  console.log(trueLat, trueLong);
-	  window.location = "http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/view/"+String(trueLat)+"/"+String(trueLong)+"/D/20140101";
-        });
-
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
-
-    </script>
   </head>
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -71,10 +43,10 @@
 
       <div class="starter-template">
         <h1>
-	Click an area on the map to view wind levels in that region.
+	Insight Presentation
         </h1>
-      </div>
-    <div id="map-canvas"></div>
+<iframe src="//www.slideshare.net/slideshow/embed_code/39665772" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/SophieDiehl/insight-wk4-39665772" title="Insight wk4" target="_blank">Insight wk4</a> </strong> from <strong><a href="http://www.slideshare.net/SophieDiehl" target="_blank">Sophie Diehl</a></strong> </div>
+</div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
