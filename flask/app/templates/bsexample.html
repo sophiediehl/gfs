@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{{title}}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/starter-template.css" rel="stylesheet">
+
+    <script type="text/javascript"
+    src="http://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false&key=AIzaSyAwkXXGz7H8p9pTRmzMiCpoyTFnJ1BVVg0">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+        // velArray holds wind velocity to report on click event
+        var velArray = {};
+        {% for (curlat, curlong, curweight) in vel_in %}
+          velArray[{{curlat}}*10000 + {{curlong}}] = {{curweight}};
+        {% endfor %}
+        // Configure the map
+        var mapOptions = {
+          center: { lat: {{center[0]}}, lng: {{center[1]}}},
+          zoom: 5
+        };
+        // Get all wind velocity data for the given area
+        var heatmapData = [
+          {% for (curlat, curlong, curweight) in vel_in %}
+          {location: new google.maps.LatLng({{curlat}}, {{curlong}}), weight:{{curweight}}},
+          {% endfor %}
+        ];
+        // Instantiate the google map
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        // Instantiate the heatmap layer and tie it to the map
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapData, dissipating:false, radius: 0.7
+        });
+        heatmap.setMap(map);
+        // This infowindow will display velocity info on click
+        var infowindow = new google.maps.InfoWindow({
+        });
+        // Click event: display location's wind velocity [m/s]
+        google.maps.event.addListener(map, 'click', function(event) {
+          var trueLat = Math.round(event.latLng.k*2)/2.0;
+          var trueLong =  Math.round(event.latLng.B*2)/2.0;
+          var truelatLng = new google.maps.LatLng(trueLat, trueLong);
+          if (trueLong < 0) {trueLong = 360 + trueLong};
+          console.log(trueLat, trueLong);
+          infowindow.open(map);
+          infowindow.setPosition(truelatLng);
+          infowindow.setContent(String(velArray[trueLat*10000+trueLong])+' [m/s]');
+        });
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      {% for row in vel_in2 %}
+      console.log(String({{row}}));
+      {% endfor %}
+
+    </script>
+
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Windpipe</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#">About</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="/slides">Slides</a></li>
+	    <li><a href="https://github.com/sophiediehl/gfs">Github</a></li>
+          </ul>
+
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+<div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+	    <li class="active"><a>{{curyear-1}}</a></li>
+	    {% for month in months[curmo-1:] %}
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{month}}<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+		{% for day in range(1,moinfo[month][1]+1) %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/D/{{curyear-1}}{{moinfo[month][0]}}{% if day<10 %}0{% endif %}{{day}}">{{day}}</a></li>
+		{% endfor %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/M/{{curyear-1}}{{moinfo[month][0]}}">Monthly Average</a></li>
+              </ul>
+            </li>
+	    {% endfor %}
+            <li class="active"><a>{{curyear}}</a></li>
+            {% for month in months[:curmo-1] %}
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{month}}<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                {% for day in range(1,moinfo[month][1]+1) %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/D/{{curyear}}{{moinfo[month][0]}}{% if day<10 %}0{% endif %}{{day}}">{{day}}</a></li>
+                {% endfor %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/M/{{curyear}}{{moinfo[month][0]}}">Monthly Average</a></li>
+              </ul>
+            </li>
+            {% endfor %}
+	    <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{months[curmo-1]}}<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                {% for day in range(1,curday+1) %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/D/{{curyear}}{{moinfo[months[curmo-1]][0]}}{% if day<10 %}0{% endif %}{{day}}">{{day}}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+
+	    <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Today's Forecast<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                {% for hour in range(8) %}
+                <li><a href="/view/{{center[0]}}/{{center[1]}}/F/{{curyear}}{{moinfo[months[curmo-1]][0]}}{% if curday<10 %}0{% endif %}{{curday}}{{hour}}">{{hour*3}}:00 UTC</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+
+
+          </ul>
+
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+
+      <div class="starter-template">
+        <h1>
+	{% if ttype=="D" %}
+	Daily Average, {{tunit[4:6]+'/'+tunit[6:8]+'/'+tunit[:4]}}
+	{% endif %}
+
+	{% if ttype=="M" %}
+	Monthly Average, {{tunit[4:6]+'/'+tunit[:4]}}
+	{% endif %}
+
+	{% if ttype=="F" %}
+	Forecast for {{tunit[4:6]+'/'+tunit[6:8]+'/'+tunit[:4]}}, {{hour}}:00 UTC
+	{% endif %}
+	</h1>
+	<p>Click location on map to view wind speed value.</p>
+      </div>
+    <div id="map-canvas"></div>
+
+    <div class=button-holder>
+    <a href="/view/{{center[0]}}/{{(center[1]-20)%360}}/{{ttype}}/{{tunit}}">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-left"></span>
+    West</button></a>
+    <a href="/view/{{((center[0]+100)%180)-90}}/{{center[1]}}/{{ttype}}/{{tunit}}">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-up"></span>
+    North</button></a>
+    <a href="/view/{{((center[0]+80)%180)-90}}/{{center[1]}}/{{ttype}}/{{tunit}}">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-down"></span>
+    South</button></a>
+    <a href="/view/{{center[0]}}/{{center[1]+20}}/{{ttype}}/{{tunit}}">
+    <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-circle-arrow-right"></span>
+    East</button></a>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

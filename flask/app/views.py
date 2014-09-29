@@ -2,107 +2,82 @@ from numpy import arange, tile, repeat
 from flask import render_template, request, redirect
 from app import app
 import happybase
+import datetime
+import pytz
 connection = happybase.Connection()
 wvel = connection.table('allwindskinny')
+forecast = connection.table('forecast')
 
-region_data = { \
-  'GB': {'name': 'Great Britain', \
-    'latmin': 50.0, 'latmax': 58.0, \
-    'longmin': 349.5, 'longmax': 360.0, \
-    'lostep': 1.0, 'center': (53.5, 356)}, \
-  'CONUS': {'name': "Continental U.S.", \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'EUSO': {'name': 'Europe - South', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'EUNO': {'name': 'Europe - Nordic', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AFNO': {'name': 'Africa - North', \
-    'latmin': 25.5, 'latmax': 38.0, \
-    'longmin': 235, 'longmax': 263.0, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AFSO': {'name': 'Africa - South', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'ALA': {'name': 'Alaska and Yukon', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'CAN': {'name': 'Canada', \
-    'latmin': 25.5, 'latmax': 49.5, \
-    'longmin': 235, 'longmax': 293.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'CAM': {'name': 'Central America', \
-    'latmin': 1.0, 'latmax': 24.5, \
-    'longmin': 252.0, 'longmax': 311.0, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'SSA': {'name': 'South America', \
-    'latmin': -36.0, 'latmax': -0.5, \
-    'longmin': 277.0, 'longmax': 325.5, \
-    'lostep': 0.5, 'center': (38.0, 263.0)}, \
-  'AUS': {'name': 'Australia', \
-    'latmin': -44.0, 'latmax': -9.0, \
-    'longmin': 112.0, 'longmax': 156.5, \
-    'lostep': 0.5, 'center': (-26.0, 134.5)}, \
-  'ME': {'name': 'Middle East', \
-    'latmin': 14.0, 'latmax': 41.0, \
-    'longmin': 24.5, 'longmax': 77.5, \
-    'lostep': 0.5, 'center': (29.0, 52.0)}, \
-  'SEA': {'name': 'Asia - Southeast', \
-    'latmin': 6.0, 'latmax': 34.5, \
-    'longmin': 70.0, 'longmax': 126.0, \
-    'lostep': 0.5, 'center': (23.5, 98.0)}, \
-  'NEA': {'name': 'Asia: Northeast', \
-    'latmin': 29.5, 'latmax': 52.5, \
-    'longmin': 89, 'longmax': 147.5, \
-    'lostep': 0.5, 'center': (41.5, 114.5)}, \
-}
+def generate_monthtables(y1,m1,y2,m2):
+  monthtables = {}
+  for month in range(m1,13):
+    monthstr = "0"+str(month) if month<10 else str(month)
+    monthkey = str(y1)+monthstr
+    tablekey = "v"+str(y1)+str(month)
+    monthtables[monthkey] = connection.table(tablekey)
+  for month in range(1,m2+1):
+    monthstr = "0"+str(month) if month<10 else str(month)
+    monthkey = str(y2)+monthstr
+    tablekey = "v"+str(y2)+str(month)
+    monthtables[monthkey] = connection.table(tablekey)
+  return monthtables
+
+monthtables = generate_monthtables(2013,9,2014,12)
+
+# Number of days in each month
+modaynominal = {'Jan':('01',31), 'Feb':('02',28), \
+	'Mar':('03',31), 'Apr':('04',30), 'May':('05',31), \
+	'Jun':('06',30), 'Jul':('07',31), 'Aug':('08',31), \
+	'Sep':('09',30), 'Oct':('10',31), 'Nov':('11',30), \
+	'Dec':('12',31)}
+mos = ['Jan','Feb','Mar','Apr','May','Jun','Jul', \
+	'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 @app.route('/')
 @app.route('/index')
 def index():
-  regions = [(region, region_data[region]['name']) \
-	for region in region_data]
-  return render_template("viewform.html",
-	regions = regions)
+  return render_template("pickarea.html")
 
-@app.route('/processform', methods=['POST'])
-def processform():
-  region = request.form.getlist('region')[0]
-  day = request.form.getlist('day')[0]
-  return redirect('/reg/'+region+'/day/'+day)
+@app.route('/slides')
+def slides():
+  return render_template("slides.html")
 
-@app.route('/reg/<region>/day/<day>')
-def showheatmap(region, day):
-  latmin = region_data[region]['latmin']
-  latmax =  region_data[region]['latmax']
-  longmin = region_data[region]['longmin']
-  longmax =  region_data[region]['longmax']
-  lastep = 0.5
-  lostep = region_data[region]['lostep']
-  center = region_data[region]['center']
-  vel_in = loadarea(latmin, latmax, longmin, \
-	longmax, lostep, day)
-  regions = [(reg, region_data[reg]['name']) \
-        for reg in region_data]
-  return render_template("loadarea.html",
+@app.route('/view/<la>/<lo>/<ttype>/<tunit>')
+def viewarea(la, lo, ttype, tunit):
+  now = datetime.datetime.now(pytz.timezone('US/Pacific'))
+  center = (float(la), float(lo))
+  vel_in = loadarea(float(la), float(lo), ttype, tunit)
+  return render_template("bsexample.html",
+	curyear = now.year,
+	curmo = now.month,
+	curday = now.day,
+	moinfo = modaynominal,
+	months = mos,
+	ttype = ttype,
+	tunit = tunit,
+	hour = int(tunit[-1])*3,
 	vel_in = vel_in,
 	center = center,
-	title = "Wind Speed in Meters per Second",
-	regions = regions) 
+	title = "Wind Speed in Meters per Second")
 
-def loadarea(latmin, latmax, longmin, longmax, lostep, day):
+def loadarea(la, lo, ttype, tunit):
+  lastep = 0.5
+  lostep = 0.5
   vel_in = [] 
-  las = arange(latmin, latmax, 0.5)
-  los = arange(longmin, longmax, lostep)
+  las = arange(la-6, la+6, lastep)
+  los = arange(lo-12, lo+12, lostep)
   lalo = zip(repeat(las, len(los)),tile(los, len(las)))
   for (la, lo) in lalo:
-    row = wvel.row(day+'_'+str(la)+'_'+str(lo))
-    vel_in.append((la, lo, float(row['d:v80m'])))
+    la = ((la + 90) % 180) - 90 # No falling off the edge
+    lo = lo % 360		# of the world!
+    if ttype == 'M': # Monthly average view
+      row = monthtables[tunit].row(str(la)+'_'+str(lo))
+      vel_in.append((la, lo, float(row['d:v80m'])))
+    elif ttype == 'D': # Daily average view
+      row = wvel.row(tunit+'_'+str(la)+'_'+str(lo))
+      vel_in.append((la, lo, float(row['d:v80m'])))
+    elif ttype == 'F':
+      row = forecast.row(tunit[8]+'_'+str(la)+'_'+str(lo))
+      vel_in.append((la, lo, float(row['d:v80m'])))
   return vel_in
+
