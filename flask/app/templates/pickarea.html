@@ -37,7 +37,7 @@
           var trueLong = (Math.round(event.latLng.B*2)/2.0 +360)%360;
           var truelatLng = new google.maps.LatLng(trueLat, trueLong);
 	  console.log(trueLat, trueLong);
-	  window.location = "http://ec2-54-183-250-200.us-west-1.compute.amazonaws.com:5000/view/"+String(trueLat)+"/"+String(trueLong)+"/D/20140101";
+	  window.location = "/view/"+String(trueLat)+"/"+String(trueLong)+"/D/20140101";
         });
 
       }

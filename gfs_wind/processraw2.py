@@ -10,9 +10,11 @@ def processor(year, month, day): # i.e. '2014', '9', '5'
   timestr = year + month + day
   results = []
 
+# # www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.2014093000/gfs.t00z.pgrb2f00
+
   for k in range(8):
-    if k<4: fn = 'gfs_rawdata2/gfs_4_'+timestr+'_0000_00'+str(k*3)+'.grb2'
-    else: fn = 'gfs_rawdata2/gfs_4_'+timestr+'_0000_0'+str(k*3)+'.grb2'
+    if k<4: fn = '/home/ubuntu/gfs/gfs_wind/gfs_rawdata2/gfs.t00z.pgrb2f0'+str(k*3)
+    else: fn = '/home/ubuntu/gfs/gfs_wind/gfs_rawdata2/gfs.t00z.pgrb2f'+str(k*3)
     gr = pygrib.open(fn)
     # Select variables relevant to wind speed
     msu = gr.select(name='U component of wind', \
@@ -30,10 +32,10 @@ def processor(year, month, day): # i.e. '2014', '9', '5'
         velocity = round((vu[i][j]**2 + vv[i][j]**2)**0.5,5)
         results.append([timeint,k,latlong, velocity])
   # Write to output file
-  with open('gfs_hdfs_in2/v'+timestr+'.csv', 'wb') as f:
+  with open('/home/ubuntu/gfs/gfs_wind/gfs_hdfs_in2/v'+timestr+'.csv', 'wb') as f:
     writer = csv.writer(f)
     writer.writerows(results)
-  return 'gfs_hdfs_in2/v'+timestr+'.csv'
+  return '/home/ubuntu/gfs/gfs_wind/gfs_hdfs_in2/v'+timestr+'.csv'
 
 if __name__ == "__main__":
   print processor(sys.argv[1],sys.argv[2],sys.argv[3])

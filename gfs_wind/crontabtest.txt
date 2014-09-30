@@ -1,0 +1,3 @@
+MAILTO=sophiadiehl@gmail.com
+15 14 30 9 2 /bin/bash /home/ubuntu/gfs/gfs_wind/gettodaysdata.sh
+
