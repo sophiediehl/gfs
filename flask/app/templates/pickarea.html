@@ -37,7 +37,7 @@
           var trueLong = (Math.round(event.latLng.B*2)/2.0 +360)%360;
           var truelatLng = new google.maps.LatLng(trueLat, trueLong);
 	  console.log(trueLat, trueLong);
-	  window.location = "/view/"+String(trueLat)+"/"+String(trueLong)+"/D/20140101";
+	  window.location = "/view/"+String(trueLat)+"/"+String(trueLong)+"/D/{{curyear}}{% if curmo<10 %}0{% endif %}{{curmo}}{% if curday<10 %}0{% endif %}{{curday}}";
         });
 
       }
@@ -59,7 +59,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#">About</a></li>
+            <li><a href="/about">About</a></li>
             <li><a href="#">API</a></li>
             <li><a href="/slides">Slides</a></li>
             <li><a href="https://github.com/sophiediehl/gfs">Github</a
@@ -75,6 +75,7 @@
         <h1>
 	Click an area on the map to view wind levels in that region.
         </h1>
+	<p>Reported wind speeds are at wind turbine altitude, 80 meters above ground.</p>
       </div>
     <div id="map-canvas"></div>
 

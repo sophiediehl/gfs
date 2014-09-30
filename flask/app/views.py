@@ -36,11 +36,19 @@ mos = ['Jan','Feb','Mar','Apr','May','Jun','Jul', \
 @app.route('/')
 @app.route('/index')
 def index():
-  return render_template("pickarea.html")
+  now = datetime.datetime.now(pytz.timezone('US/Pacific'))
+  return render_template("pickarea.html",
+	curyear = now.year,
+	curmo = now.month,
+	curday = now.day)
 
 @app.route('/slides')
 def slides():
   return render_template("slides.html")
+
+@app.route('/about')
+def about():
+  return render_template("about.html")
 
 @app.route('/view/<la>/<lo>/<ttype>/<tunit>')
 def viewarea(la, lo, ttype, tunit):

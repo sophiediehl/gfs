@@ -3,8 +3,7 @@
 # get today's data
 year=`/bin/date +%Y`
 month=`/bin/date +%m`
-#day=`/bin/date +%d`
-day=29 
+day=`/bin/date +%d`
 
 # Download from NOAA website
 for ihour in {0..7}

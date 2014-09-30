@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.about-picture {
+  text-align: center;
+  padding: 10px;
+}
 
 html, body, #map-canvas {
   height: 400px;
