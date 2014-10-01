@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="/about">About</a></li>
-            <li><a href="/api">API</a></li>
+            <li><a href="#">API</a></li>
             <li><a href="/slides">Slides</a></li>
             <li><a href="https://github.com/sophiediehl/gfs">Github</a
 ></li>
@@ -44,10 +44,25 @@
     </div>
 
       <div class="starter-template">
-        <h1>
-	Insight Presentation
-        </h1>
-<iframe src="//www.slideshare.net/slideshow/embed_code/39673584" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/SophieDiehl/insight-wk4-39673584" title="Insight wk4" target="_blank">Insight wk4</a> </strong> from <strong><a href="http://www.slideshare.net/SophieDiehl" target="_blank">Sophie Diehl</a></strong> </div>
+	<h2>Windpipe API</h2></div>
+<div><p>Windpipe data for wind speeds at 80 meters above ground in [meters/second] may be retrieved in CSV format via HTTP requests to specially formatted URLs. You may specify the rectangular region of interest, and choose between a monthly average for a particular month, a daily average for a particular day, or a forecast for the current day.</p>
+<p>Data is available from September 2013 through the current day.</p>
+<p>To access information via wget in the command line, you would run the command:<br>
+wget http://54.193.64.222:5000/api/LAT1/LONG1/LAT2/LONG2/TIMETYPE/YEAR/MONTH/DAY</p>
+<p>and replace the fields as follows:
+<ul>
+  <li>LAT1, LONG1: The latitude and longitude, respectively, of southwest corner of the region of interest. </li>
+  <li>LAT2, LONG2: The latitude and longitude, respectively, of the northeast corner of the region of interest.</li>
+  <li>TIMETYPE: M for monthly average, D for daily average, or F for today's forecast.</li>
+  <li>YEAR: the desired year. "na" for today's forecast.</li>
+  <li>MONTH: the desired month. "na" for today's forecast.</li>
+  <li>DAY: the desired day. "na" for today's forecast or monthly average. </li>
+</ul>
+</p>
+<p>For example, to retrieve the monthly average for January, 2014 for all latitudes and longitudes (0.5 degree granularity) between (10.0,10.0) and (20.0, 20.0), run the command:<br>
+wget http://54.193.64.222:5000/api/10.0/10.0/20.0/20.0/M/2014/1/na</p>
+<p>Data will be returned in the following CSV row format:<br>
+latitude, longitude, velocity[m/s] [, hour (UTC timezone) if TIMETYPE=F].</p>
 </div>
 
     <!-- Bootstrap core JavaScript

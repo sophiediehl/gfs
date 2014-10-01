@@ -32,7 +32,7 @@ date=$(/usr/bin/python /home/ubuntu/gfs/gfs_wind/../pig/getday.py $year $month $
 
 # If it's the first of the month,
 # fill in monthly average table for previous month
-if [[ $day == 1 ]];
+if [[ $day == "01" ]];
 then
   month=$(($month-1))
   if [[ $month -lt 0 ]]
