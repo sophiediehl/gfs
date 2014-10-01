@@ -48,7 +48,7 @@
 <div><p>Windpipe data for wind speeds at 80 meters above ground in [meters/second] may be retrieved in CSV format via HTTP requests to specially formatted URLs. You may specify the rectangular region of interest, and choose between a monthly average for a particular month, a daily average for a particular day, or a forecast for the current day.</p>
 <p>Data is available from September 2013 through the current day.</p>
 <p>To access information via wget in the command line, you would run the command:<br>
-wget http://54.193.64.222:5000/api/LAT1/LONG1/LAT2/LONG2/TIMETYPE/YEAR/MONTH/DAY</p>
+wget -O my_filename.csv http://54.193.64.222:5000/api/LAT1/LONG1/LAT2/LONG2/TIMETYPE/YEAR/MONTH/DAY</p>
 <p>and replace the fields as follows:
 <ul>
   <li>LAT1, LONG1: The latitude and longitude, respectively, of southwest corner of the region of interest. </li>
@@ -60,7 +60,7 @@ wget http://54.193.64.222:5000/api/LAT1/LONG1/LAT2/LONG2/TIMETYPE/YEAR/MONTH/DAY
 </ul>
 </p>
 <p>For example, to retrieve the monthly average for January, 2014 for all latitudes and longitudes (0.5 degree granularity) between (10.0,10.0) and (20.0, 20.0), run the command:<br>
-wget http://54.193.64.222:5000/api/10.0/10.0/20.0/20.0/M/2014/1/na</p>
+wget -O Jan2014.csv http://54.193.64.222:5000/api/10.0/10.0/20.0/20.0/M/2014/1/na</p>
 <p>Data will be returned in the following CSV row format:<br>
 latitude, longitude, velocity[m/s] [, hour (UTC timezone) if TIMETYPE=F].</p>
 </div>
