@@ -4,7 +4,7 @@ I built this project as part of the Insight Data Engineering fellowship program,
 
 It can be viewed at
 http://54.193.64.222:5000/
-until October 19th.
+until October 17th.
 
 Data comes from the National Oceanic and Atmospheric Administration's GFS4 modeling system, which provides forecasts in 3-hour intervals at a spatial resolution of 0.5 degrees latitude and longitude, released in daily batches. Data is available at
 http://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/
